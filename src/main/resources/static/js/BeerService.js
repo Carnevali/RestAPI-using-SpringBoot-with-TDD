@@ -15,7 +15,7 @@
 
         function createDefault() {
             var deferred = $q.defer();
-            $http.get(urls.SERVICE_API + '/beer/default/').then(function (response) {
+            $http.get(urls.SERVICE_API + '/container/default/').then(function (response) {
                     deferred.resolve(response);
                 },
                 function (errResponse) {

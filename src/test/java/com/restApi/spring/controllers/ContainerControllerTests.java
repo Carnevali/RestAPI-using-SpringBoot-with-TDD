@@ -1,5 +1,6 @@
 package com.restApi.spring.controllers;
 
+import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
 import com.restApi.spring.model.Containers;
 import com.restApi.spring.service.BeerService;
@@ -42,10 +43,12 @@ public class ContainerControllerTests {
 			MediaType.APPLICATION_JSON.getSubtype(),
 			Charset.forName("utf8"));
 
+	private final String httpUrl = "/api/container";
 	private MockMvc mockMvc;
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
 	private List<Containers> containersList = new ArrayList<>();
+	private List<Beer> beerList = new ArrayList<>();
 
 	@Autowired
 	private ContainerService containerService;
@@ -72,28 +75,25 @@ public class ContainerControllerTests {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
 		this.containerService.deleteAllContainers();
+		this.beerService.deleteAllBeers();
 
-		beerService.createBeersDefault();
+		this.containersList.add(createContainerInternal("Container 1", 6.0, null, StatusType.OK));
+		this.containersList.add(createContainerInternal("Container 2", 6.0, null, StatusType.OK));
+		this.containersList.add(createContainerInternal("Container 3", 7.0, null, StatusType.OK));
 
-		Containers containers = new Containers();
-		containers.setDescription("Containers 1");
-		containers.setTemperature(BigDecimal.valueOf(5.0));
-		containerService.saveContainer(containers);
+		this.beerList = this.beerService.createBeersDefault(this.containersList.get(0));
+		this.beerService.createBeersDefault(this.containersList.get(1));
+		this.beerService.createBeersDefault(this.containersList.get(2));
+	}
 
-		List<Beer> beerList = beerService.findAllBeers();
-
-		for (Beer b: beerList) {
-			b.setContainers(containers);
-			beerService.updateBeer(b);
-		}
-
-		containers.setBeers(beerList);
-		this.containersList.add(containerService.updateContainer(containers));
+	private Containers createContainerInternal(String description, Double temperature, List<Beer> beers, StatusType status) {
+		Containers containers = new Containers(description, temperature, beers, status);
+		return containerService.saveContainer(containers);
 	}
 
 	@Test
 	public void containerNotFound() throws Exception {
-		mockMvc.perform(get("/api/container/-1")
+		mockMvc.perform(get(httpUrl + "-1")
 				.content("")
 				.contentType(contentType))
 				.andExpect(status().isNotFound());
@@ -101,7 +101,7 @@ public class ContainerControllerTests {
 
 	@Test
 	public void readSingleContainer() throws Exception {
-		mockMvc.perform(get("/api/container/" + this.containersList.get(0).getId()))
+		mockMvc.perform(get(httpUrl + this.containersList.get(0).getId()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.id", is(this.containersList.get(0).getId().intValue())))
@@ -110,39 +110,39 @@ public class ContainerControllerTests {
 				.andExpect(jsonPath("$.beers[0].min", is(this.containersList.get(0).getBeers().get(0).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[0].max", is(this.containersList.get(0).getBeers().get(0).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[0].description", is(this.containersList.get(0).getBeers().get(0).getDescription())))
-				.andExpect(jsonPath("$.beers[0].status", is(this.containersList.get(0).getBeers().get(0).getStatus())))
+				.andExpect(jsonPath("$.beers[0].status.value", is(this.containersList.get(0).getBeers().get(0).getStatus().getValue())))
 				.andExpect(jsonPath("$.beers[1].id", is(this.containersList.get(0).getBeers().get(1).getId().intValue())))
 				.andExpect(jsonPath("$.beers[1].min", is(this.containersList.get(0).getBeers().get(1).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[1].max", is(this.containersList.get(0).getBeers().get(1).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[1].description", is(this.containersList.get(0).getBeers().get(1).getDescription())))
-				.andExpect(jsonPath("$.beers[1].status", is(this.containersList.get(0).getBeers().get(1).getStatus())))
+				.andExpect(jsonPath("$.beers[1].status.value", is(this.containersList.get(0).getBeers().get(1).getStatus().getValue())))
 				.andExpect(jsonPath("$.beers[2].id", is(this.containersList.get(0).getBeers().get(2).getId().intValue())))
 				.andExpect(jsonPath("$.beers[2].min", is(this.containersList.get(0).getBeers().get(2).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[2].max", is(this.containersList.get(0).getBeers().get(2).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[2].description", is(this.containersList.get(0).getBeers().get(2).getDescription())))
-				.andExpect(jsonPath("$.beers[2].status", is(this.containersList.get(0).getBeers().get(2).getStatus())))
+				.andExpect(jsonPath("$.beers[2].status.value", is(this.containersList.get(0).getBeers().get(2).getStatus().getValue())))
 				.andExpect(jsonPath("$.beers[3].id", is(this.containersList.get(0).getBeers().get(3).getId().intValue())))
 				.andExpect(jsonPath("$.beers[3].min", is(this.containersList.get(0).getBeers().get(3).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[3].max", is(this.containersList.get(0).getBeers().get(3).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[3].description", is(this.containersList.get(0).getBeers().get(3).getDescription())))
-				.andExpect(jsonPath("$.beers[3].status", is(this.containersList.get(0).getBeers().get(3).getStatus())))
+				.andExpect(jsonPath("$.beers[3].status.value", is(this.containersList.get(0).getBeers().get(3).getStatus().getValue())))
 				.andExpect(jsonPath("$.beers[4].id", is(this.containersList.get(0).getBeers().get(4).getId().intValue())))
 				.andExpect(jsonPath("$.beers[4].min", is(this.containersList.get(0).getBeers().get(4).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[4].max", is(this.containersList.get(0).getBeers().get(4).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[4].description", is(this.containersList.get(0).getBeers().get(4).getDescription())))
-				.andExpect(jsonPath("$.beers[4].status", is(this.containersList.get(0).getBeers().get(4).getStatus())))
+				.andExpect(jsonPath("$.beers[4].status.value", is(this.containersList.get(0).getBeers().get(4).getStatus().getValue())))
 				.andExpect(jsonPath("$.beers[5].id", is(this.containersList.get(0).getBeers().get(5).getId().intValue())))
 				.andExpect(jsonPath("$.beers[5].min", is(this.containersList.get(0).getBeers().get(5).getMin().doubleValue())))
 				.andExpect(jsonPath("$.beers[5].max", is(this.containersList.get(0).getBeers().get(5).getMax().doubleValue())))
 				.andExpect(jsonPath("$.beers[5].description", is(this.containersList.get(0).getBeers().get(5).getDescription())))
-				.andExpect(jsonPath("$.beers[5].status", is(this.containersList.get(0).getBeers().get(5).getStatus())))
+				.andExpect(jsonPath("$.beers[5].status.value", is(this.containersList.get(0).getBeers().get(5).getStatus().getValue())))
 				.andExpect(jsonPath("$.description", is(this.containersList.get(0).getDescription())))
-				.andExpect(jsonPath("$.status", is(this.containersList.get(0).getStatus())));
+				.andExpect(jsonPath("$.status.value", is(this.containersList.get(0).getStatus().getValue())));
 	}
 
 	@Test
 	public void readContainer() throws Exception {
-		mockMvc.perform(get("/api/container/"))
+		mockMvc.perform(get(httpUrl))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
@@ -153,45 +153,42 @@ public class ContainerControllerTests {
 				.andExpect(jsonPath("$[0].beers[0].min", is(this.containersList.get(0).getBeers().get(0).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[0].max", is(this.containersList.get(0).getBeers().get(0).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[0].description", is(this.containersList.get(0).getBeers().get(0).getDescription())))
-				.andExpect(jsonPath("$[0].beers[0].status", is(this.containersList.get(0).getBeers().get(0).getStatus())))
+				.andExpect(jsonPath("$[0].beers[0].status.value", is(this.containersList.get(0).getBeers().get(0).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].beers[1].id", is(this.containersList.get(0).getBeers().get(1).getId().intValue())))
 				.andExpect(jsonPath("$[0].beers[1].min", is(this.containersList.get(0).getBeers().get(1).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[1].max", is(this.containersList.get(0).getBeers().get(1).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[1].description", is(this.containersList.get(0).getBeers().get(1).getDescription())))
-				.andExpect(jsonPath("$[0].beers[1].status", is(this.containersList.get(0).getBeers().get(1).getStatus())))
+				.andExpect(jsonPath("$[0].beers[1].status.value", is(this.containersList.get(0).getBeers().get(1).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].beers[2].id", is(this.containersList.get(0).getBeers().get(2).getId().intValue())))
 				.andExpect(jsonPath("$[0].beers[2].min", is(this.containersList.get(0).getBeers().get(2).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[2].max", is(this.containersList.get(0).getBeers().get(2).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[2].description", is(this.containersList.get(0).getBeers().get(2).getDescription())))
-				.andExpect(jsonPath("$[0].beers[2].status", is(this.containersList.get(0).getBeers().get(2).getStatus())))
+				.andExpect(jsonPath("$[0].beers[2].status.value", is(this.containersList.get(0).getBeers().get(2).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].beers[3].id", is(this.containersList.get(0).getBeers().get(3).getId().intValue())))
 				.andExpect(jsonPath("$[0].beers[3].min", is(this.containersList.get(0).getBeers().get(3).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[3].max", is(this.containersList.get(0).getBeers().get(3).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[3].description", is(this.containersList.get(0).getBeers().get(3).getDescription())))
-				.andExpect(jsonPath("$[0].beers[3].status", is(this.containersList.get(0).getBeers().get(3).getStatus())))
+				.andExpect(jsonPath("$[0].beers[3].status.value", is(this.containersList.get(0).getBeers().get(3).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].beers[4].id", is(this.containersList.get(0).getBeers().get(4).getId().intValue())))
 				.andExpect(jsonPath("$[0].beers[4].min", is(this.containersList.get(0).getBeers().get(4).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[4].max", is(this.containersList.get(0).getBeers().get(4).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[4].description", is(this.containersList.get(0).getBeers().get(4).getDescription())))
-				.andExpect(jsonPath("$[0].beers[4].status", is(this.containersList.get(0).getBeers().get(4).getStatus())))
+				.andExpect(jsonPath("$[0].beers[4].status.value", is(this.containersList.get(0).getBeers().get(4).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].beers[5].id", is(this.containersList.get(0).getBeers().get(5).getId().intValue())))
 				.andExpect(jsonPath("$[0].beers[5].min", is(this.containersList.get(0).getBeers().get(5).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[5].max", is(this.containersList.get(0).getBeers().get(5).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].beers[5].description", is(this.containersList.get(0).getBeers().get(5).getDescription())))
-				.andExpect(jsonPath("$[0].beers[5].status", is(this.containersList.get(0).getBeers().get(5).getStatus())))
+				.andExpect(jsonPath("$[0].beers[5].status.value", is(this.containersList.get(0).getBeers().get(5).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].description", is(this.containersList.get(0).getDescription())))
-				.andExpect(jsonPath("$[0].status", is(this.containersList.get(0).getStatus())));
+				.andExpect(jsonPath("$[0].status.value", is(this.containersList.get(0).getStatus().getValue())));
 	}
 
 	@Test
 	public void createContainer() throws Exception {
-		Containers containers = new Containers();
-		containers.setDescription("New Containers " + UUID.randomUUID());
-		containers.setTemperature(BigDecimal.ZERO);
-
+		Containers containers = new Containers("New Containers " + UUID.randomUUID(), 5.0, this.beerList, StatusType.OK);
 		String containerJson = json(containers);
 
-		this.mockMvc.perform(post("/api/container/")
+		this.mockMvc.perform(post(httpUrl)
 				.contentType(contentType)
 				.content(containerJson))
 				.andExpect(status().isCreated());
@@ -199,7 +196,7 @@ public class ContainerControllerTests {
 
 	@Test
 	public void deleteAllContainers() throws Exception {
-		this.mockMvc.perform(delete("/api/container/")
+		this.mockMvc.perform(delete(httpUrl)
 				.contentType(contentType)
 				.content(""))
 				.andExpect(jsonPath("$.success", is(true)))
@@ -209,12 +206,48 @@ public class ContainerControllerTests {
 	@Test
 	public void updateContainer() throws Exception {
 		Containers containers = this.containersList.get(0);
-		containers.setTemperature(BigDecimal.TEN);
+		containers.resetTemperature();
 
-		this.mockMvc.perform(put("/api/container/" + this.containersList.get(0).getId().intValue())
+		this.mockMvc.perform(put(httpUrl + this.containersList.get(0).getId().intValue())
 				.contentType(contentType)
 				.content(json(containers)))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void createDefault() throws Exception {
+		this.mockMvc.perform(get(httpUrl + "default/")
+				.contentType(contentType)
+				.content(""))
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.temperature", is(5.0)))
+				.andExpect(jsonPath("$.beers[0].min", is(this.beerList.get(0).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[0].max", is(this.beerList.get(0).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[0].description", is(this.beerList.get(0).getDescription())))
+				.andExpect(jsonPath("$.beers[0].status.value", is(this.beerList.get(0).getStatus().getValue())))
+				.andExpect(jsonPath("$.beers[1].min", is(this.beerList.get(1).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[1].max", is(this.beerList.get(1).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[1].description", is(this.beerList.get(1).getDescription())))
+				.andExpect(jsonPath("$.beers[1].status.value", is(this.beerList.get(1).getStatus().getValue())))
+				.andExpect(jsonPath("$.beers[2].min", is(this.beerList.get(2).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[2].max", is(this.beerList.get(2).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[2].description", is(this.beerList.get(2).getDescription())))
+				.andExpect(jsonPath("$.beers[2].status.value", is(this.beerList.get(2).getStatus().getValue())))
+				.andExpect(jsonPath("$.beers[3].min", is(this.beerList.get(3).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[3].max", is(this.beerList.get(3).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[3].description", is(this.beerList.get(3).getDescription())))
+				.andExpect(jsonPath("$.beers[3].status.value", is(this.beerList.get(3).getStatus().getValue())))
+				.andExpect(jsonPath("$.beers[4].min", is(this.beerList.get(4).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[4].max", is(this.beerList.get(4).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[4].description", is(this.beerList.get(4).getDescription())))
+				.andExpect(jsonPath("$.beers[4].status.value", is(this.beerList.get(4).getStatus().getValue())))
+				.andExpect(jsonPath("$.beers[5].min", is(this.beerList.get(5).getMin().doubleValue())))
+				.andExpect(jsonPath("$.beers[5].max", is(this.beerList.get(5).getMax().doubleValue())))
+				.andExpect(jsonPath("$.beers[5].description", is(this.beerList.get(5).getDescription())))
+				.andExpect(jsonPath("$.beers[5].status.value", is(this.beerList.get(5).getStatus().getValue())))
+				.andExpect(jsonPath("$.description", is("Containers 1")))
+				.andExpect(jsonPath("$.status.value", is(StatusType.WARNING.getValue())))
+				.andExpect(status().isCreated());
 	}
 
 	protected String json(Object o) throws IOException {

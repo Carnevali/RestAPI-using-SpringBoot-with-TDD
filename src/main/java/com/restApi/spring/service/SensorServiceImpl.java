@@ -5,8 +5,6 @@ import com.restApi.spring.model.Containers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -23,41 +21,27 @@ public class SensorServiceImpl implements SensorService {
     @Autowired
     private ContainerService containerService;
 
-    public void changeTemperature() {
+    public void startSensor() {
+        Runnable runnable = () -> changeBehavior();
+        new Thread(runnable).start();
+    }
+
+    public void changeBehavior() {
         List<Containers> containersList = this.containerService.findAllContainers();
 
         for (Containers containers: containersList) {
             if (containers.getTemperature().intValue() == 15) {
-                containers.setTemperature(BigDecimal.valueOf(2.0));
+                containers.resetTemperature();
             } else {
-                containers.setTemperature(containers.getTemperature().add(BigDecimal.ONE));
+                containers.updateTemperature();
             }
 
-            containers.setBeers(beerService.findBeersByContainers(containers));
-            Integer countBeers = 0;
-
             for (Beer beer: containers.getBeers()) {
-                if (containers.getTemperature().intValue() > beer.getMax().intValue()) {
-                    beer.setStatus(1);
-                    countBeers += 1;
-
-                } else if (containers.getTemperature().intValue() < beer.getMin().intValue()) {
-                    beer.setStatus(1);
-                    countBeers += 1;
-                } else {
-                    beer.setStatus(0);
-                }
-
+                beer.setStatus(containers);
                 beerService.updateBeer(beer);
             }
 
-            if (countBeers == containers.getBeers().size()) {
-                containers.setStatus(2);
-            } else if (countBeers > 0) {
-                containers.setStatus(1);
-            } else {
-                containers.setStatus(0);
-            }
+            containers.updateStatus();
 
             this.containerService.updateContainer(containers);
         }

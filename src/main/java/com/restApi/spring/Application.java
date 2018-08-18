@@ -22,7 +22,7 @@ public class Application extends SpringBootServletInitializer {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Bean(name = "changeTemperature")
+	@Bean(name = "changeBehavior")
 	public Executor asyncExecutor() {
 		final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 

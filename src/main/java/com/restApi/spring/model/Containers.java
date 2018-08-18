@@ -1,11 +1,11 @@
 package com.restApi.spring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.restApi.spring.enums.StatusType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,21 +19,34 @@ import java.util.List;
 public class Containers implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
-    @Column(name="description", nullable=false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name="temperature", nullable=false)
-    private BigDecimal temperature;
+    @Column(name = "temperature", nullable = false)
+    private Double temperature;
 
-    @OneToMany(mappedBy = "containers", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "containers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Beer> beers = new ArrayList<>();
 
-    @Column(name="status", nullable=false)
-    private Integer status = 0;
+    @Column(name = "status", nullable = false)
+    private StatusType status = StatusType.OK;
+
+    public Containers() {
+
+    }
+
+    public Containers(String description, Double temperature, List<Beer> beers, StatusType status) {
+        super();
+
+        this.description = description;
+        this.temperature = temperature;
+        this.beers = beers;
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
@@ -43,27 +56,46 @@ public class Containers implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getTemperature() {
+    public Double getTemperature() {
         return temperature;
-    }
-
-    public void setTemperature(BigDecimal temperature) {
-        this.temperature = temperature;
     }
 
     public List<Beer> getBeers() {
         return beers;
     }
 
-    public void setBeers(List<Beer> beers) {
-        this.beers = beers;
+    public StatusType getStatus() {
+        return status;
     }
 
-    public Integer getStatus() { return status; }
+    public void updateTemperature() {
+        this.temperature += 1.0;
+    }
 
-    public void setStatus(Integer status) { this.status = status; }
+    public void resetTemperature() {
+        this.temperature = 2.0;
+    }
+
+    public void updateStatus() {
+        List<Beer> goodBeers = new ArrayList<>();
+        List<Beer> badBeers = new ArrayList<>();
+
+        for (Beer beer : this.beers) {
+            if (this.temperature > beer.getMax()) {
+                badBeers.add(beer);
+            } else if (this.temperature < beer.getMin()) {
+                badBeers.add(beer);
+            } else {
+                goodBeers.add(beer);
+            }
+        }
+
+        if (this.beers.containsAll(goodBeers)) {
+            this.status = StatusType.OK;
+        } else if (this.beers.containsAll(badBeers)) {
+            this.status = StatusType.DANGER;
+        } else {
+            this.status = StatusType.WARNING;
+        }
+    }
 }

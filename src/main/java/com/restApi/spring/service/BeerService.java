@@ -20,5 +20,5 @@ public interface BeerService {
     List<Beer> findAllBeers();
     List<Beer> findBeersByContainers(Containers containers);
     boolean isBeerExist(Beer beer);
-    void createBeersDefault();
+    List<Beer> createBeersDefault(Containers containers);
 }

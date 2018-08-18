@@ -1,11 +1,13 @@
 package com.restApi.spring.service;
 
+import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Containers;
 import com.restApi.spring.repositories.ContainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,9 @@ public class ContainerServiceImpl implements ContainerService {
 
     @Autowired
     private ContainerRepository containerRepository;
+
+    @Autowired
+    private BeerService beerService;
 
     public Containers findById(Long id) {
         Optional<Containers> container = containerRepository.findById(id);
@@ -48,6 +53,28 @@ public class ContainerServiceImpl implements ContainerService {
 
     public void deleteAllContainers(){
         containerRepository.deleteAll();
+    }
+
+    public List<Containers> createDefaultContainers(){
+        deleteAllContainers();
+        beerService.deleteAllBeers();
+
+        List<Containers> result = new ArrayList<>();
+
+        Containers containers = new Containers("Containers 1", 5.0, null, StatusType.WARNING);
+        result.add(saveContainer(containers));
+
+        containers = new Containers("Containers 2", 3.0, null, StatusType.OK);
+        result.add(saveContainer(containers));
+
+        containers = new Containers("Containers 3", 6.0, null, StatusType.OK);
+        result.add(saveContainer(containers));
+
+        beerService.createBeersDefault(result.get(0));
+        beerService.createBeersDefault(result.get(1));
+        beerService.createBeersDefault(result.get(2));
+
+        return findAllContainers();
     }
 
     public boolean isContainerExist(Containers containers) {

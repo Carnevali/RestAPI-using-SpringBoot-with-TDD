@@ -14,6 +14,7 @@ public interface ContainerService {
     Containers saveContainer(Containers containers);
     Containers updateContainer(Containers containers);
     void deleteAllContainers();
+    List<Containers> createDefaultContainers();
     List<Containers> findAllContainers();
     boolean isContainerExist(Containers containers);
 }

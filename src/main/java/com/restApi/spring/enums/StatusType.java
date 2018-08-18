@@ -10,31 +10,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.io.IOException;
 
 /**
- * Created by felipecarnevalli on 14/7/18.
+ * Created by felipecarnevalli on 15/8/18.
  */
 
-@JsonDeserialize(using = BeerType.Deserializer.class )
+@JsonDeserialize(using = StatusType.Deserializer.class )
 @JsonFormat(shape = JsonFormat.Shape.OBJECT )
-public enum BeerType {
-    IPA("Ipa", "label-success"),
+public enum StatusType {
+    OK("Ok", "label-success"),
 
-    PILSNER("Pilsner", "label-info"),
+    WARNING("Warning", "label-warning"),
 
-    PALEALE("Pale Ae", "label-purple"),
+    DANGER("Danger", "label-danger");
 
-    STOUT("Stout", "label-inverse"),
-
-    WHEATBEER("Wheat Beer", "label-danger"),
-
-    LARGER("Larger", "label-warning"),
-
-    NONE("None", "label-warning");
-
-    private String enumName;
     private String value;
     private String label;
+    private String enumName;
 
-    private BeerType(String value, String label) {
+    private StatusType(String value, String label) {
         this.value = value;
         this.label = label;
         this.enumName = this.name();
@@ -43,18 +35,19 @@ public enum BeerType {
     public String getValue() {
         return value;
     }
+    public String getLabel() { return label; }
 
     @Override
     public String toString() {
         return this.getValue();
     }
 
-    public static class Deserializer extends JsonDeserializer<BeerType> {
+    public static class Deserializer extends JsonDeserializer<StatusType> {
         @Override
-        public BeerType deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
+        public StatusType deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
             final JsonNode nodes = parser.getCodec().readTree(parser);
             final String enumName = nodes.get("enumName").asText();
-            return BeerType.valueOf(enumName);
+            return StatusType.valueOf(enumName);
         }
     }
 }

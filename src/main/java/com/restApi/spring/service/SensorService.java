@@ -5,5 +5,6 @@ package com.restApi.spring.service;
  */
 
 public interface SensorService {
-    void changeTemperature();
+    void changeBehavior();
+    void startSensor();
 }

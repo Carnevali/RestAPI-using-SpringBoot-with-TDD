@@ -2,6 +2,7 @@ package com.restApi.spring.controller;
 
 import com.restApi.spring.model.Containers;
 import com.restApi.spring.service.ContainerService;
+import com.restApi.spring.service.SensorService;
 import com.restApi.spring.util.CustomErrorType;
 import com.restApi.spring.util.HttpReturn;
 import org.slf4j.Logger;
@@ -10,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -21,7 +24,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/container")
 public class ContainerAPIController {
 
     public static final Logger logger = LoggerFactory.getLogger(ContainerAPIController.class);
@@ -29,7 +32,10 @@ public class ContainerAPIController {
     @Autowired
     ContainerService containerService;
 
-    @RequestMapping(value = "/container/", method = RequestMethod.GET)
+    @Autowired
+    SensorService sensorService;
+
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<?>> listAllContainers() {
         List<Containers> containerses = containerService.findAllContainers();
         if (containerses.isEmpty()) {
@@ -39,7 +45,7 @@ public class ContainerAPIController {
         return new ResponseEntity<List<?>>(containerses, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/container/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getContainer(@PathVariable("id") long id) {
         logger.info("Fetching containers with id {}", id);
         Containers containers = containerService.findById(id);
@@ -52,7 +58,7 @@ public class ContainerAPIController {
         return new ResponseEntity<Containers>(containers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/container/", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createContainer(@RequestBody Containers containers, UriComponentsBuilder ucBuilder) {
         logger.info("Creating Containers : {}", containers);
 
@@ -69,7 +75,7 @@ public class ContainerAPIController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/container/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateContainer(@PathVariable("id") long id, @RequestBody Containers containers) {
         logger.info("Updating Containers with id {}", id);
 
@@ -81,15 +87,11 @@ public class ContainerAPIController {
                     HttpStatus.NOT_FOUND);
         }
 
-        currentContainers.setDescription(containers.getDescription());
-        currentContainers.setTemperature(containers.getTemperature());
-        currentContainers.setStatus(0);
-
-        containerService.updateContainer(currentContainers);
+        containerService.updateContainer(containers);
         return new ResponseEntity<Containers>(currentContainers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/container/", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteAllContainers() {
         HttpReturn ok = new HttpReturn();
 
@@ -107,5 +109,19 @@ public class ContainerAPIController {
             ok.setMessage(e.getMessage());
             return new ResponseEntity<HttpReturn>(ok, HttpStatus.OK);
         }
+    }
+
+    @RequestMapping(value = "/default", method = RequestMethod.GET)
+    public ResponseEntity<?> createDefault() {
+        List<Containers> containers = containerService.createDefaultContainers();
+        sensorService.startSensor();
+
+        return new ResponseEntity<List<Containers>>(containers, HttpStatus.CREATED);
+    }
+
+    @Async("changeBehavior")
+    public CompletableFuture changeBehavior() {
+        this.sensorService.changeBehavior();
+        return CompletableFuture.completedFuture("change");
     }
 }

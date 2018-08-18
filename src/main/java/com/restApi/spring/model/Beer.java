@@ -1,13 +1,13 @@
 package com.restApi.spring.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.restApi.spring.enums.BeerType;
-
+import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -31,18 +31,33 @@ public class Beer implements Serializable {
     private BeerType type;
 
     @Column(name="min", nullable=false)
-    private BigDecimal min;
+    private Double min;
 
     @Column(name="max", nullable=false)
-    private BigDecimal max;
+    private Double max;
 
-    @ManyToOne
-    @JoinColumn(name="containers_id")
-    @JsonBackReference
-    private Containers containers;
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @JoinTable(name = "beer_container", joinColumns = { @JoinColumn(name = "beer_id") }, inverseJoinColumns = { @JoinColumn(name = "container_id") })
+    private List<Containers> containers = new ArrayList<>();
 
     @Column(name="status", nullable=false)
-    private Integer status = 0;
+    private StatusType status = StatusType.OK;
+
+
+    public Beer() {
+
+    }
+
+    public Beer(String description, BeerType type, Double min, Double max, List<Containers> containers, StatusType status) {
+        super();
+
+        this.description = description;
+        this.type = type;
+        this.min = min;
+        this.max = max;
+        this.containers = containers;
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
@@ -52,43 +67,33 @@ public class Beer implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public BeerType getType() {
         return type;
     }
 
-    public void setType(BeerType type) {
-        this.type = type;
-    }
-
-    public BigDecimal getMin() {
+    public Double getMin() {
         return min;
     }
 
-    public void setMin(BigDecimal min) {
-        this.min = min;
-    }
-
-    public BigDecimal getMax() {
+    public Double getMax() {
         return max;
     }
 
-    public void setMax(BigDecimal max) {
-        this.max = max;
-    }
-
-    public Containers getContainers() {
+    public List<Containers> getContainers() {
         return containers;
     }
 
-    public void setContainers(Containers containers) {
-        this.containers = containers;
+    public StatusType getStatus() {
+        return status;
     }
 
-    public Integer getStatus() { return status; }
-
-    public void setStatus(Integer status) { this.status = status; }
+    public void setStatus(Containers container) {
+        if (container.getTemperature() > this.max) {
+            this.status = StatusType.WARNING;
+        } else if (container.getTemperature() < this.min) {
+            this.status = StatusType.WARNING;
+        } else {
+            this.status = StatusType.OK;
+        }
+    }
 }
