@@ -36,8 +36,7 @@ public class SensorServiceImplTest {
     @Before
     public void setup() {
         beerService.deleteAllBeers();
-        container = new Containers("New Container", 6.0, null, StatusType.OK);
-        beerService.createBeersDefault(container);
+        container = new Containers("New Container", 6.0, beerService.createBeersDefault(), StatusType.OK);
     }
 
     @Test

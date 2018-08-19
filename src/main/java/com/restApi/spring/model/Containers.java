@@ -29,7 +29,7 @@ public class Containers implements Serializable {
     @Column(name = "temperature", nullable = false)
     private Double temperature;
 
-    @ManyToMany(mappedBy = "containers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "containers", fetch = FetchType.EAGER)
     private List<Beer> beers = new ArrayList<>();
 
     @Column(name = "status", nullable = false)

@@ -36,8 +36,10 @@ public class Beer implements Serializable {
     @Column(name="max", nullable=false)
     private Double max;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(name = "beer_container", joinColumns = { @JoinColumn(name = "beer_id") }, inverseJoinColumns = { @JoinColumn(name = "container_id") })
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(name = "beer_container",
+               joinColumns = { @JoinColumn(name = "beer_id", referencedColumnName = "id") },
+               inverseJoinColumns = { @JoinColumn(name = "container_id", referencedColumnName = "id") })
     private List<Containers> containers = new ArrayList<>();
 
     @Column(name="status", nullable=false)
@@ -87,10 +89,10 @@ public class Beer implements Serializable {
         return status;
     }
 
-    public void setStatus(Containers container) {
-        if (container.getTemperature() > this.max) {
+    public void updateStatus(Double temperature) {
+        if (temperature > this.max) {
             this.status = StatusType.WARNING;
-        } else if (container.getTemperature() < this.min) {
+        } else if (temperature < this.min) {
             this.status = StatusType.WARNING;
         } else {
             this.status = StatusType.OK;

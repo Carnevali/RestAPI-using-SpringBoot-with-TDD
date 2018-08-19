@@ -3,7 +3,9 @@ package com.restApi.spring.controllers;
 import com.restApi.spring.enums.BeerType;
 import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
+import com.restApi.spring.model.Containers;
 import com.restApi.spring.service.BeerService;
+import com.restApi.spring.service.ContainerService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -186,8 +188,9 @@ public class BeerControllerTests {
 	@Test
 	public void updateBeer() throws Exception {
 		Beer beer = this.beerList.get(0);
+		beer.updateStatus(0.0);
 
-		this.mockMvc.perform(put(httpUrl + this.beerList.get(0).getId().intValue())
+		this.mockMvc.perform(put(httpUrl + beer.getId().intValue())
 				.contentType(contentType)
 				.content(json(beer)))
 				.andExpect(status().isOk());

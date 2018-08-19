@@ -4,6 +4,7 @@ import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Containers;
 import com.restApi.spring.repositories.ContainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,18 +62,14 @@ public class ContainerServiceImpl implements ContainerService {
 
         List<Containers> result = new ArrayList<>();
 
-        Containers containers = new Containers("Containers 1", 5.0, null, StatusType.WARNING);
+        Containers containers = new Containers("Containers 1", 5.0, beerService.createBeersDefault(), StatusType.WARNING);
         result.add(saveContainer(containers));
 
-        containers = new Containers("Containers 2", 3.0, null, StatusType.OK);
+        containers = new Containers("Containers 2", 3.0, beerService.createBeersDefault(), StatusType.OK);
         result.add(saveContainer(containers));
 
-        containers = new Containers("Containers 3", 6.0, null, StatusType.OK);
+        containers = new Containers("Containers 3", 6.0, beerService.createBeersDefault(), StatusType.OK);
         result.add(saveContainer(containers));
-
-        beerService.createBeersDefault(result.get(0));
-        beerService.createBeersDefault(result.get(1));
-        beerService.createBeersDefault(result.get(2));
 
         return findAllContainers();
     }

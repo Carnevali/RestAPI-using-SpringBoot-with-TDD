@@ -59,23 +59,22 @@ public class BeerServiceImpl implements BeerService {
         return findByDescription(beer.getDescription()) != null;
     }
 
-    public List<Beer> createBeersDefault(Containers containers) {
-        createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", containers, StatusType.OK);
-        createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", containers, StatusType.OK);
-        createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)", containers, StatusType.OK);
-        createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)", containers, StatusType.WARNING);
-        createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)", containers, StatusType.OK);
-        createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)", containers, StatusType.OK);
+    public List<Beer> createBeersDefault() {
+        List<Beer> list = new ArrayList<>();
 
-        return beerRepository.findAll();
+        list.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", null, StatusType.OK));
+        list.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", null, StatusType.OK));
+        list.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)", null, StatusType.OK));
+        list.add(createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)", null, StatusType.WARNING));
+        list.add(createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)", null, StatusType.OK));
+        list.add(createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)", null, StatusType.OK));
+
+        return list;
     }
 
-    private void createBeerInternal(BeerType beerType, Double min, Double max, String description, Containers containers, StatusType status) {
-        List<Containers> arrayList = new ArrayList();
-        arrayList.add(containers);
-
-        Beer beer = new Beer(description, beerType, min, max, arrayList, status);
-        saveBeer(beer);
+    private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description, List<Containers> containers, StatusType status) {
+        Beer beer = new Beer(description, beerType, min, max, containers, status);
+        return saveBeer(beer);
     }
 
 }

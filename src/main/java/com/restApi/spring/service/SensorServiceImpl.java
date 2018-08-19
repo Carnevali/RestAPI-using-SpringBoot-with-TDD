@@ -37,7 +37,7 @@ public class SensorServiceImpl implements SensorService {
             }
 
             for (Beer beer: containers.getBeers()) {
-                beer.setStatus(containers);
+                beer.updateStatus(containers.getTemperature());
                 beerService.updateBeer(beer);
             }
 

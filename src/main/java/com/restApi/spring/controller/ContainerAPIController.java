@@ -36,13 +36,13 @@ public class ContainerAPIController {
     SensorService sensorService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<?>> listAllContainers() {
+    public ResponseEntity<List<Containers>> listAllContainers() {
         List<Containers> containerses = containerService.findAllContainers();
         if (containerses.isEmpty()) {
-            return new ResponseEntity<List<?>>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<Containers>>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<List<?>>(containerses, HttpStatus.OK);
+        return new ResponseEntity<List<Containers>>(containerses, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

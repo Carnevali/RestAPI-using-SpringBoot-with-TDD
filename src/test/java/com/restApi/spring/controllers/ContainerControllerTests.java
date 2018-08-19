@@ -76,14 +76,11 @@ public class ContainerControllerTests {
 
 		this.containerService.deleteAllContainers();
 		this.beerService.deleteAllBeers();
+		this.beerList = this.beerService.createBeersDefault();
 
-		this.containersList.add(createContainerInternal("Container 1", 6.0, null, StatusType.OK));
-		this.containersList.add(createContainerInternal("Container 2", 6.0, null, StatusType.OK));
-		this.containersList.add(createContainerInternal("Container 3", 7.0, null, StatusType.OK));
-
-		this.beerList = this.beerService.createBeersDefault(this.containersList.get(0));
-		this.beerService.createBeersDefault(this.containersList.get(1));
-		this.beerService.createBeersDefault(this.containersList.get(2));
+		this.containersList.add(createContainerInternal("Container 1", 6.0, this.beerService.createBeersDefault(), StatusType.OK));
+		this.containersList.add(createContainerInternal("Container 2", 6.0, this.beerService.createBeersDefault(), StatusType.OK));
+		this.containersList.add(createContainerInternal("Container 3", 7.0, this.beerService.createBeersDefault(), StatusType.OK));
 	}
 
 	private Containers createContainerInternal(String description, Double temperature, List<Beer> beers, StatusType status) {
