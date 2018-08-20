@@ -5,8 +5,7 @@ import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
 import com.restApi.spring.service.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by felipe on 19/8/18.
@@ -15,7 +14,7 @@ public class BeerFactory {
     @Autowired
     private BeerService beerService;
 
-    public void createBeers(List<Beer> beerList) {
+    public void createBeers(Set<Beer> beerList) {
         beerList.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", StatusType.OK));
         beerList.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", StatusType.OK));
         beerList.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)", StatusType.OK));

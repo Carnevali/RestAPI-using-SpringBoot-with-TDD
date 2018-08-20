@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import static java.math.BigDecimal.valueOf;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +40,7 @@ public class SensorServiceImplTest {
 
     @Test
     public void shouldDoNothingWhenThereIsNoContainers() {
-        given(containerService.findAllContainers()).willReturn(emptyList());
+        given(containerService.findAllContainers()).willReturn(emptySet());
 
         testInstance.changeBehavior();
 
@@ -52,7 +51,7 @@ public class SensorServiceImplTest {
     @Test
     public void shouldUpdateContainersTemperatureIs7() {
         container.updateTemperature();
-        given(containerService.findAllContainers()).willReturn(singletonList(container));
+        given(containerService.findAllContainers()).willReturn(singleton(container));
 
         assertThat(container.getTemperature(), is(valueOf(7.0)));
 
@@ -65,7 +64,7 @@ public class SensorServiceImplTest {
             container.updateTemperature();
         }
 
-        given(containerService.findAllContainers()).willReturn(singletonList(container));
+        given(containerService.findAllContainers()).willReturn(singleton(container));
         container.resetTemperature();
 
         assertThat(container.getTemperature(), is(valueOf(2.0)));
@@ -76,7 +75,7 @@ public class SensorServiceImplTest {
 
     @Test
     public void shouldUpdateStatusContainersWhenContainersTemperatureIs2() {
-        given(containerService.findAllContainers()).willReturn(singletonList(container));
+        given(containerService.findAllContainers()).willReturn(singleton(container));
 
         container.resetTemperature();
         container.updateStatus();

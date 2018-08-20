@@ -14,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -36,13 +35,13 @@ public class ContainerAPIController {
     SensorService sensorService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Containers>> listAllContainers() {
-        List<Containers> containerses = containerService.findAllContainers();
+    public ResponseEntity<Set<Containers>> listAllContainers() {
+        Set<Containers> containerses = containerService.findAllContainers();
         if (containerses.isEmpty()) {
-            return new ResponseEntity<List<Containers>>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Set<Containers>>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<List<Containers>>(containerses, HttpStatus.OK);
+        return new ResponseEntity<Set<Containers>>(containerses, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -113,10 +112,10 @@ public class ContainerAPIController {
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public ResponseEntity<?> createDefault() {
-        List<Containers> containers = containerService.createDefaultContainers();
+        Set<Containers> containers = containerService.createDefaultContainers();
         sensorService.startSensor();
 
-        return new ResponseEntity<List<Containers>>(containers, HttpStatus.CREATED);
+        return new ResponseEntity<Set<Containers>>(containers, HttpStatus.CREATED);
     }
 
     @Async("changeBehavior")

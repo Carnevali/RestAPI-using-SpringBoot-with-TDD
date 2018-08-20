@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/beer")
+@Transactional
 public class BeerAPIController {
     public static final Logger logger = LoggerFactory.getLogger(BeerAPIController.class);
 
@@ -30,14 +32,14 @@ public class BeerAPIController {
     ContainerService containerService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<?>> listAllBeers() {
-        List<Beer> beers = beerService.findAllBeers();
+    public ResponseEntity<Set<?>> listAllBeers() {
+        Set<Beer> beers = beerService.findAllBeers();
 
         if (beers.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<List<?>>(beers, HttpStatus.OK);
+        return new ResponseEntity<Set<?>>(beers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

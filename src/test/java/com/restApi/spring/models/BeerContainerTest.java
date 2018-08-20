@@ -16,9 +16,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +35,7 @@ public class BeerContainerTest {
     private BeerService beerService;
 
     private static String urlEndPoint = "http://localhost:8080/api/";
-    private List<Beer> beerList = new ArrayList<>();
+    private Set<Beer> beerList = new HashSet<>();
 
     @Before
     public void setup() {
@@ -48,9 +47,7 @@ public class BeerContainerTest {
 
     @Test
     public void whenSaveManyToManyRelationshipThenCorrect() throws JSONException {
-        template.postForEntity(urlEndPoint + "beer", this.beerList.get(0), Beer.class);
-        template.postForEntity(urlEndPoint + "beer", this.beerList.get(1), Beer.class);
-        template.postForEntity(urlEndPoint + "beer", this.beerList.get(2), Beer.class);
+        beerList.forEach(b -> template.postForEntity(urlEndPoint + "beer", b, Beer.class));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Content-type", "text/uri-list");

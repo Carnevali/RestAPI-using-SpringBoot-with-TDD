@@ -5,7 +5,7 @@ import com.restApi.spring.model.Containers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 15/7/18.
@@ -26,8 +26,9 @@ public class SensorServiceImpl implements SensorService {
         new Thread(runnable).start();
     }
 
+    @Transactional
     public void changeBehavior() {
-        List<Containers> containersList = this.containerService.findAllContainers();
+        Set<Containers> containersList = this.containerService.findAllContainers();
 
         for (Containers containers: containersList) {
             if (containers.getTemperature().intValue() == 15) {

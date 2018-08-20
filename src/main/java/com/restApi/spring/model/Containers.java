@@ -6,8 +6,8 @@ import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -29,8 +29,8 @@ public class Containers implements Serializable {
     @Column(name = "temperature", nullable = false)
     private Double temperature;
 
-    @ManyToMany(mappedBy = "containers", fetch = FetchType.EAGER)
-    private List<Beer> beers = new ArrayList<>();
+    @OneToMany(mappedBy = "containers", fetch = FetchType.EAGER)
+    private Set<Beer> beers = new HashSet<>();
 
     @Column(name = "status", nullable = false)
     private StatusType status = StatusType.OK;
@@ -39,7 +39,7 @@ public class Containers implements Serializable {
 
     }
 
-    public Containers(String description, Double temperature, List<Beer> beers, StatusType status) {
+    public Containers(String description, Double temperature, Set<Beer> beers, StatusType status) {
         super();
 
         this.description = description;
@@ -60,7 +60,7 @@ public class Containers implements Serializable {
         return temperature;
     }
 
-    public List<Beer> getBeers() {
+    public Set<Beer> getBeers() {
         return beers;
     }
 
@@ -77,8 +77,8 @@ public class Containers implements Serializable {
     }
 
     public void updateStatus() {
-        List<Beer> goodBeers = new ArrayList<>();
-        List<Beer> badBeers = new ArrayList<>();
+        Set<Beer> goodBeers = new HashSet<>();
+        Set<Beer> badBeers = new HashSet<>();
 
         for (Beer beer : this.beers) {
             if (this.temperature > beer.getMax()) {

@@ -6,8 +6,8 @@ import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -36,11 +36,11 @@ public class Beer implements Serializable {
     @Column(name="max", nullable=false)
     private Double max;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(name = "beer_container",
-               joinColumns = { @JoinColumn(name = "beer_id", referencedColumnName = "id") },
-               inverseJoinColumns = { @JoinColumn(name = "container_id", referencedColumnName = "id") })
-    private List<Containers> containers = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "beers_containers",
+            joinColumns = { @JoinColumn(name = "containers_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "beers_id", referencedColumnName = "id") })
+    private Set<Containers> containers = new HashSet<>();
 
     @Column(name="status", nullable=false)
     private StatusType status = StatusType.OK;
@@ -50,7 +50,7 @@ public class Beer implements Serializable {
 
     }
 
-    public Beer(String description, BeerType type, Double min, Double max, List<Containers> containers, StatusType status) {
+    public Beer(String description, BeerType type, Double min, Double max, Set<Containers> containers, StatusType status) {
         super();
 
         this.description = description;
@@ -81,7 +81,7 @@ public class Beer implements Serializable {
         return max;
     }
 
-    public List<Containers> getContainers() {
+    public Set<Containers> getContainers() {
         return containers;
     }
 

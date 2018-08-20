@@ -4,13 +4,13 @@ import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Containers;
 import com.restApi.spring.repositories.ContainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -27,13 +27,7 @@ public class ContainerServiceImpl implements ContainerService {
     private BeerService beerService;
 
     public Containers findById(Long id) {
-        Optional<Containers> container = containerRepository.findById(id);
-
-        if (container.isPresent()) {
-            return container.get();
-        }
-
-        return null;
+        return containerRepository.findById(id).orElse(null);
     }
 
     public Containers findByDescription(String description) {
@@ -48,19 +42,19 @@ public class ContainerServiceImpl implements ContainerService {
         return saveContainer(containers);
     }
 
-    public List<Containers> findAllContainers(){
-        return containerRepository.findAll();
+    public Set<Containers> findAllContainers(){
+        return new HashSet(containerRepository.findAll());
     }
 
     public void deleteAllContainers(){
         containerRepository.deleteAll();
     }
 
-    public List<Containers> createDefaultContainers(){
+    public Set<Containers> createDefaultContainers(){
         deleteAllContainers();
         beerService.deleteAllBeers();
 
-        List<Containers> result = new ArrayList<>();
+        Set<Containers> result = new HashSet<>();
 
         Containers containers = new Containers("Containers 1", 5.0, beerService.createBeersDefault(), StatusType.WARNING);
         result.add(saveContainer(containers));
