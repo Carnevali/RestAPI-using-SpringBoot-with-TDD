@@ -16,7 +16,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +38,7 @@ public class BeerContainerTest {
     private BeerService beerService;
 
     private static String urlEndPoint = "http://localhost:8080/api/";
-    private Set<Beer> beerList = new HashSet<>();
+    private List<Beer> beerList = new ArrayList<>();
 
     @Before
     public void setup() {

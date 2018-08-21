@@ -3,10 +3,7 @@ package com.restApi.spring.controllers;
 import com.restApi.spring.enums.BeerType;
 import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
-import com.restApi.spring.model.Containers;
 import com.restApi.spring.service.BeerService;
-import com.restApi.spring.service.ContainerService;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,11 +16,8 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -47,7 +41,7 @@ public class BeerControllerTests {
 	private MockMvc mockMvc;
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
-	private Set<Beer> beerList = new HashSet<>();
+	private List<Beer> beerList = new ArrayList<>();
 
 	@Autowired
 	private BeerService beerService;

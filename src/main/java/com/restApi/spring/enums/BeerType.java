@@ -20,24 +20,22 @@ public enum BeerType {
 
     PILSNER("Pilsner", "label-info"),
 
-    PALEALE("Pale Ae", "label-purple"),
+    PALEALE("PaleAle", "label-purple"),
 
     STOUT("Stout", "label-inverse"),
 
-    WHEATBEER("Wheat Beer", "label-danger"),
+    WHEATBEER("WheatBeer", "label-danger"),
 
     LARGER("Larger", "label-warning"),
 
     NONE("None", "label-warning");
 
-    private String enumName;
     private String value;
     private String label;
 
     private BeerType(String value, String label) {
         this.value = value;
         this.label = label;
-        this.enumName = this.name();
     }
 
     public String getValue() {
@@ -53,8 +51,8 @@ public enum BeerType {
         @Override
         public BeerType deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
             final JsonNode nodes = parser.getCodec().readTree(parser);
-            final String enumName = nodes.get("enumName").asText();
-            return BeerType.valueOf(enumName);
+            final String enumName = nodes.get("value").asText();
+            return BeerType.valueOf(enumName.toUpperCase());
         }
     }
 }

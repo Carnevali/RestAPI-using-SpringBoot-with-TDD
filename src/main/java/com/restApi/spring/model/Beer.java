@@ -6,8 +6,8 @@ import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -40,7 +40,7 @@ public class Beer implements Serializable {
     @JoinTable(name = "beers_containers",
             joinColumns = { @JoinColumn(name = "containers_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "beers_id", referencedColumnName = "id") })
-    private Set<Containers> containers = new HashSet<>();
+    private List<Containers> containers = new ArrayList<>();
 
     @Column(name="status", nullable=false)
     private StatusType status = StatusType.OK;
@@ -50,7 +50,7 @@ public class Beer implements Serializable {
 
     }
 
-    public Beer(String description, BeerType type, Double min, Double max, Set<Containers> containers, StatusType status) {
+    public Beer(String description, BeerType type, Double min, Double max, List<Containers> containers, StatusType status) {
         super();
 
         this.description = description;
@@ -81,7 +81,7 @@ public class Beer implements Serializable {
         return max;
     }
 
-    public Set<Containers> getContainers() {
+    public List<Containers> getContainers() {
         return containers;
     }
 

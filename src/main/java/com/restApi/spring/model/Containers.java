@@ -6,7 +6,9 @@ import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +32,7 @@ public class Containers implements Serializable {
     private Double temperature;
 
     @OneToMany(mappedBy = "containers", fetch = FetchType.EAGER)
-    private Set<Beer> beers = new HashSet<>();
+    private List<Beer> beers = new ArrayList<>();
 
     @Column(name = "status", nullable = false)
     private StatusType status = StatusType.OK;
@@ -39,7 +41,7 @@ public class Containers implements Serializable {
 
     }
 
-    public Containers(String description, Double temperature, Set<Beer> beers, StatusType status) {
+    public Containers(String description, Double temperature, List<Beer> beers, StatusType status) {
         super();
 
         this.description = description;
@@ -60,7 +62,7 @@ public class Containers implements Serializable {
         return temperature;
     }
 
-    public Set<Beer> getBeers() {
+    public List<Beer> getBeers() {
         return beers;
     }
 

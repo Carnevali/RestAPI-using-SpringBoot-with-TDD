@@ -3,6 +3,7 @@ package com.restApi.spring.service;
 import com.restApi.spring.model.Containers;
 import org.springframework.data.jpa.repository.EntityGraph;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,10 +20,11 @@ public interface ContainerService {
     Containers saveContainer(Containers containers);
     Containers updateContainer(Containers containers);
     void deleteAllContainers();
-    Set<Containers> createDefaultContainers();
+    void deleteContainerById(Containers containers);
+    List<Containers> createDefaultContainers();
 
     @EntityGraph(attributePaths = "beers")
-    Set<Containers> findAllContainers();
+    List<Containers> findAllContainers();
 
     boolean isContainerExist(Containers containers);
 }

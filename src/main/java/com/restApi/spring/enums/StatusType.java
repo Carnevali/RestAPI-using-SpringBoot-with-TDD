@@ -24,12 +24,10 @@ public enum StatusType {
 
     private String value;
     private String label;
-    private String enumName;
 
     private StatusType(String value, String label) {
         this.value = value;
         this.label = label;
-        this.enumName = this.name();
     }
 
     public String getValue() {
@@ -46,8 +44,8 @@ public enum StatusType {
         @Override
         public StatusType deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
             final JsonNode nodes = parser.getCodec().readTree(parser);
-            final String enumName = nodes.get("enumName").asText();
-            return StatusType.valueOf(enumName);
+            final String enumName = nodes.get("value").asText();
+            return StatusType.valueOf(enumName.toUpperCase());
         }
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -40,7 +39,7 @@ public class SensorServiceImplTest {
 
     @Test
     public void shouldDoNothingWhenThereIsNoContainers() {
-        given(containerService.findAllContainers()).willReturn(emptySet());
+        given(containerService.findAllContainers()).willReturn(emptyList());
 
         testInstance.changeBehavior();
 
@@ -51,9 +50,11 @@ public class SensorServiceImplTest {
     @Test
     public void shouldUpdateContainersTemperatureIs7() {
         container.updateTemperature();
-        given(containerService.findAllContainers()).willReturn(singleton(container));
+        given(containerService.findAllContainers()).willReturn(singletonList(container));
 
-        assertThat(container.getTemperature(), is(valueOf(7.0)));
+        assertThat(container.getTemperature(), is(7.0));
+
+        testInstance.changeBehavior();
 
         verify(containerService).updateContainer(container);
     }
@@ -64,10 +65,12 @@ public class SensorServiceImplTest {
             container.updateTemperature();
         }
 
-        given(containerService.findAllContainers()).willReturn(singleton(container));
+        given(containerService.findAllContainers()).willReturn(singletonList(container));
         container.resetTemperature();
 
-        assertThat(container.getTemperature(), is(valueOf(2.0)));
+        assertThat(container.getTemperature(), is(2.0));
+
+        testInstance.changeBehavior();
 
         container.updateStatus();
         verify(containerService).updateContainer(container);
@@ -75,12 +78,14 @@ public class SensorServiceImplTest {
 
     @Test
     public void shouldUpdateStatusContainersWhenContainersTemperatureIs2() {
-        given(containerService.findAllContainers()).willReturn(singleton(container));
+        given(containerService.findAllContainers()).willReturn(singletonList(container));
 
         container.resetTemperature();
         container.updateStatus();
 
         assertThat(container.getStatus(), is(StatusType.OK));
+
+        testInstance.changeBehavior();
 
         verify(containerService).updateContainer(container);
     }

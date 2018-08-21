@@ -18,8 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-
-import javax.swing.tree.ExpandVetoException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -44,8 +42,8 @@ public class ContainerControllerTests {
 	private MockMvc mockMvc;
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
-	private Set<Containers> containersList = new HashSet<>();
-	private Set<Beer> beerList = new HashSet<>();
+	private List<Containers> containersList = new ArrayList<>();
+	private List<Beer> beerList = new ArrayList<>();
 
 	@Autowired
 	private ContainerService containerService;
@@ -80,7 +78,7 @@ public class ContainerControllerTests {
 		this.containersList.add(createContainerInternal("Container 3", 7.0, this.beerService.createBeersDefault(), StatusType.OK));
 	}
 
-	private Containers createContainerInternal(String description, Double temperature, Set<Beer> beers, StatusType status) {
+	private Containers createContainerInternal(String description, Double temperature, List<Beer> beers, StatusType status) {
 		Containers containers = new Containers(description, temperature, beers, status);
 		return containerService.saveContainer(containers);
 	}

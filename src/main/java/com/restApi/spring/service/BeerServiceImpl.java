@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -47,11 +46,11 @@ public class BeerServiceImpl implements BeerService {
         beerRepository.deleteAll();
     }
 
-    public Set<Beer> findAllBeers(){
-        return new HashSet(beerRepository.findAll());
+    public List<Beer> findAllBeers(){
+        return beerRepository.findAll();
     }
 
-    public Set<Beer> findBeersByContainers(Containers containers){
+    public List<Beer> findBeersByContainers(Containers containers){
         return beerRepository.findBeersByContainers(containers);
     }
 
@@ -59,8 +58,8 @@ public class BeerServiceImpl implements BeerService {
         return findByDescription(beer.getDescription()) != null;
     }
 
-    public Set<Beer> createBeersDefault() {
-        Set<Beer> list = new HashSet<>();
+    public List<Beer> createBeersDefault() {
+        List<Beer> list = new ArrayList<>();
 
         list.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", null, StatusType.OK));
         list.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", null, StatusType.OK));
@@ -72,7 +71,7 @@ public class BeerServiceImpl implements BeerService {
         return list;
     }
 
-    private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description, Set<Containers> containers, StatusType status) {
+    private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description, List<Containers> containers, StatusType status) {
         Beer beer = new Beer(description, beerType, min, max, containers, status);
         return saveBeer(beer);
     }

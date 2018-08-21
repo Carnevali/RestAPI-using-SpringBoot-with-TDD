@@ -4,6 +4,7 @@ import com.restApi.spring.model.Beer;
 import com.restApi.spring.model.Containers;
 import org.springframework.data.jpa.repository.EntityGraph;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,11 +24,11 @@ public interface BeerService {
     void deleteAllBeers();
 
     @EntityGraph(attributePaths = "containers")
-    Set<Beer> findAllBeers();
+    List<Beer> findAllBeers();
 
     @EntityGraph(attributePaths = "containers")
-    Set<Beer> findBeersByContainers(Containers containers);
+    List<Beer> findBeersByContainers(Containers containers);
 
     boolean isBeerExist(Beer beer);
-    Set<Beer> createBeersDefault();
+    List<Beer> createBeersDefault();
 }

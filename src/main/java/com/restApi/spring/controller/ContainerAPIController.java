@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -35,13 +35,13 @@ public class ContainerAPIController {
     SensorService sensorService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Set<Containers>> listAllContainers() {
-        Set<Containers> containerses = containerService.findAllContainers();
+    public ResponseEntity<List<Containers>> listAllContainers() {
+        List<Containers> containerses = containerService.findAllContainers();
         if (containerses.isEmpty()) {
-            return new ResponseEntity<Set<Containers>>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<Containers>>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<Set<Containers>>(containerses, HttpStatus.OK);
+        return new ResponseEntity<List<Containers>>(containerses, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -110,12 +110,32 @@ public class ContainerAPIController {
         }
     }
 
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteContainers() {
+        HttpReturn ok = new HttpReturn();
+
+        try {
+            logger.info("Deleting Containers");
+
+            containerService.deleteAllContainers();
+            ok.setSuccess(true);
+            ok.setMessage("Works well");
+            return new ResponseEntity<HttpReturn>(ok, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            ok.setSuccess(false);
+            ok.setMessage(e.getMessage());
+            return new ResponseEntity<HttpReturn>(ok, HttpStatus.OK);
+        }
+    }
+
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public ResponseEntity<?> createDefault() {
-        Set<Containers> containers = containerService.createDefaultContainers();
+        List<Containers> containers = containerService.createDefaultContainers();
         sensorService.startSensor();
 
-        return new ResponseEntity<Set<Containers>>(containers, HttpStatus.CREATED);
+        return new ResponseEntity<List<Containers>>(containers, HttpStatus.CREATED);
     }
 
     @Async("changeBehavior")

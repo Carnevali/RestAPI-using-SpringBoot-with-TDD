@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -32,14 +32,14 @@ public class BeerAPIController {
     ContainerService containerService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Set<?>> listAllBeers() {
-        Set<Beer> beers = beerService.findAllBeers();
+    public ResponseEntity<List<?>> listAllBeers() {
+        List<Beer> beers = beerService.findAllBeers();
 
         if (beers.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<Set<?>>(beers, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(beers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

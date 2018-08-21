@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by felipecarnevalli on 14/7/18.
@@ -42,19 +39,22 @@ public class ContainerServiceImpl implements ContainerService {
         return saveContainer(containers);
     }
 
-    public Set<Containers> findAllContainers(){
-        return new HashSet(containerRepository.findAll());
+    public List<Containers> findAllContainers(){
+        return containerRepository.findAll();
     }
 
     public void deleteAllContainers(){
         containerRepository.deleteAll();
     }
+    public void deleteContainerById(Containers containers){
+        containerRepository.delete(containers);
+    }
 
-    public Set<Containers> createDefaultContainers(){
+    public List<Containers> createDefaultContainers(){
         deleteAllContainers();
         beerService.deleteAllBeers();
 
-        Set<Containers> result = new HashSet<>();
+        List<Containers> result = new ArrayList<>();
 
         Containers containers = new Containers("Containers 1", 5.0, beerService.createBeersDefault(), StatusType.WARNING);
         result.add(saveContainer(containers));
