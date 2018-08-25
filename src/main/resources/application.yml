@@ -4,6 +4,10 @@ server:
 ---
 spring:
   profiles: local,default
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 datasource:
   sampleapp:
     url: jdbc:h2:~/test
@@ -20,6 +24,10 @@ datasource:
 ---
 spring:
   profiles: prod
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 datasource:
   sampleapp:
     url: jdbc:mysql://localhost:3306

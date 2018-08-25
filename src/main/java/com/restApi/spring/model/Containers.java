@@ -32,7 +32,7 @@ public class Containers implements Serializable {
     private Double temperature;
 
     @OneToMany(mappedBy = "containers", fetch = FetchType.EAGER)
-    private List<Beer> beers = new ArrayList<>();
+    private List<BeerContainers> beerContainers = new ArrayList<>();
 
     @Column(name = "status", nullable = false)
     private StatusType status = StatusType.OK;
@@ -41,12 +41,20 @@ public class Containers implements Serializable {
 
     }
 
-    public Containers(String description, Double temperature, List<Beer> beers, StatusType status) {
+    public Containers(String description, Double temperature, StatusType status) {
         super();
 
         this.description = description;
         this.temperature = temperature;
-        this.beers = beers;
+        this.status = status;
+    }
+
+    public Containers(String description, Double temperature, List<BeerContainers> beerContainers, StatusType status) {
+        super();
+
+        this.description = description;
+        this.temperature = temperature;
+        this.beerContainers = beerContainers;
         this.status = status;
     }
 
@@ -62,8 +70,8 @@ public class Containers implements Serializable {
         return temperature;
     }
 
-    public List<Beer> getBeers() {
-        return beers;
+    public List<BeerContainers> getBeerContainers() {
+        return beerContainers;
     }
 
     public StatusType getStatus() {
@@ -72,29 +80,40 @@ public class Containers implements Serializable {
 
     public void updateTemperature() {
         this.temperature += 1.0;
+
+        for (BeerContainers bc: this.beerContainers) {
+            bc.getContainers().updateTemperature();
+        }
     }
 
     public void resetTemperature() {
         this.temperature = 2.0;
+
+        for (BeerContainers bc: this.beerContainers) {
+            bc.getContainers().resetTemperature();
+        }
     }
 
     public void updateStatus() {
         Set<Beer> goodBeers = new HashSet<>();
         Set<Beer> badBeers = new HashSet<>();
+        Set<Beer> totalBeers = new HashSet<>();
 
-        for (Beer beer : this.beers) {
-            if (this.temperature > beer.getMax()) {
-                badBeers.add(beer);
-            } else if (this.temperature < beer.getMin()) {
-                badBeers.add(beer);
+        for (BeerContainers bc : this.beerContainers) {
+            if (this.temperature > bc.getBeer().getMax()) {
+                badBeers.add(bc.getBeer());
+            } else if (this.temperature < bc.getBeer().getMin()) {
+                badBeers.add(bc.getBeer());
             } else {
-                goodBeers.add(beer);
+                goodBeers.add(bc.getBeer());
             }
+
+            totalBeers.add(bc.getBeer());
         }
 
-        if (this.beers.containsAll(goodBeers)) {
+        if (totalBeers.containsAll(goodBeers)) {
             this.status = StatusType.OK;
-        } else if (this.beers.containsAll(badBeers)) {
+        } else if (totalBeers.containsAll(badBeers)) {
             this.status = StatusType.DANGER;
         } else {
             this.status = StatusType.WARNING;

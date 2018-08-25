@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class BeerContainerTest {
+public class BeerContainersTest {
 
     @Autowired
     private TestRestTemplate template;

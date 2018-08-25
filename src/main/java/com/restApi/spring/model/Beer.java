@@ -2,7 +2,6 @@ package com.restApi.spring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.restApi.spring.enums.BeerType;
-import com.restApi.spring.enums.StatusType;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
@@ -36,29 +35,20 @@ public class Beer implements Serializable {
     @Column(name="max", nullable=false)
     private Double max;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "beers_containers",
-            joinColumns = { @JoinColumn(name = "containers_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "beers_id", referencedColumnName = "id") })
-    private List<Containers> containers = new ArrayList<>();
-
-    @Column(name="status", nullable=false)
-    private StatusType status = StatusType.OK;
-
+    @OneToMany(mappedBy = "beer", fetch = FetchType.EAGER)
+    private List<BeerContainers> beerContainers = new ArrayList<>();
 
     public Beer() {
 
     }
 
-    public Beer(String description, BeerType type, Double min, Double max, List<Containers> containers, StatusType status) {
+    public Beer(String description, BeerType type, Double min, Double max) {
         super();
 
         this.description = description;
         this.type = type;
         this.min = min;
         this.max = max;
-        this.containers = containers;
-        this.status = status;
     }
 
     public Long getId() {
@@ -81,21 +71,7 @@ public class Beer implements Serializable {
         return max;
     }
 
-    public List<Containers> getContainers() {
-        return containers;
-    }
-
-    public StatusType getStatus() {
-        return status;
-    }
-
-    public void updateStatus(Double temperature) {
-        if (temperature > this.max) {
-            this.status = StatusType.WARNING;
-        } else if (temperature < this.min) {
-            this.status = StatusType.WARNING;
-        } else {
-            this.status = StatusType.OK;
-        }
+    public List<BeerContainers> getBeerContainers() {
+        return beerContainers;
     }
 }

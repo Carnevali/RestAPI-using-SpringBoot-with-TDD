@@ -1,9 +1,7 @@
 package com.restApi.spring.service;
 
 import com.restApi.spring.enums.BeerType;
-import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
-import com.restApi.spring.model.Containers;
 import com.restApi.spring.repositories.BeerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,10 +48,6 @@ public class BeerServiceImpl implements BeerService {
         return beerRepository.findAll();
     }
 
-    public List<Beer> findBeersByContainers(Containers containers){
-        return beerRepository.findBeersByContainers(containers);
-    }
-
     public boolean isBeerExist(Beer beer) {
         return findByDescription(beer.getDescription()) != null;
     }
@@ -61,18 +55,18 @@ public class BeerServiceImpl implements BeerService {
     public List<Beer> createBeersDefault() {
         List<Beer> list = new ArrayList<>();
 
-        list.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", null, StatusType.OK));
-        list.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", null, StatusType.OK));
-        list.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)", null, StatusType.OK));
-        list.add(createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)", null, StatusType.WARNING));
-        list.add(createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)", null, StatusType.OK));
-        list.add(createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)", null, StatusType.OK));
+        list.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)"));
+        list.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)"));
+        list.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)"));
+        list.add(createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)"));
+        list.add(createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)"));
+        list.add(createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)"));
 
         return list;
     }
 
-    private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description, List<Containers> containers, StatusType status) {
-        Beer beer = new Beer(description, beerType, min, max, containers, status);
+    private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description) {
+        Beer beer = new Beer(description, beerType, min, max);
         return saveBeer(beer);
     }
 

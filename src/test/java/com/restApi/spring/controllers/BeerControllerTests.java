@@ -1,7 +1,6 @@
 package com.restApi.spring.controllers;
 
 import com.restApi.spring.enums.BeerType;
-import com.restApi.spring.enums.StatusType;
 import com.restApi.spring.model.Beer;
 import com.restApi.spring.service.BeerService;
 import org.junit.Before;
@@ -66,16 +65,16 @@ public class BeerControllerTests {
 
 		this.beerService.deleteAllBeers();
 
-		this.beerList.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)", StatusType.OK));
-		this.beerList.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)", StatusType.OK));
-		this.beerList.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)", StatusType.OK));
-		this.beerList.add(createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)", StatusType.WARNING));
-		this.beerList.add(createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)", StatusType.OK));
-		this.beerList.add(createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)", StatusType.OK));
+		this.beerList.add(createBeerInternal(BeerType.PILSNER, 4.0, 6.0, "Beer 1 (Pilsner)"));
+		this.beerList.add(createBeerInternal(BeerType.IPA, 5.0, 6.0, "Beer 2 (IPA)"));
+		this.beerList.add(createBeerInternal(BeerType.LARGER, 4.0, 7.0, "Beer 3 (Larger)"));
+		this.beerList.add(createBeerInternal(BeerType.STOUT, 6.0, 8.0, "Beer 4 (Stout)"));
+		this.beerList.add(createBeerInternal(BeerType.WHEATBEER, 3.0, 5.0, "Beer 5 (Wheat beer)"));
+		this.beerList.add(createBeerInternal(BeerType.PALEALE, 4.0, 6.0, "Beer 6 (Pale Ale)"));
 	}
 
-	private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description, StatusType status) {
-		Beer beer = new Beer(description, beerType, min, max, null, status);
+	private Beer createBeerInternal(BeerType beerType, Double min, Double max, String description) {
+		Beer beer = new Beer(description, beerType, min, max);
 		return beerService.saveBeer(beer);
 	}
 
@@ -97,8 +96,7 @@ public class BeerControllerTests {
                         .andExpect(jsonPath("$.id", is(beer.getId().intValue())))
                         .andExpect(jsonPath("$.min", is(beer.getMin().doubleValue())))
                         .andExpect(jsonPath("$.max", is(beer.getMax().doubleValue())))
-                        .andExpect(jsonPath("$.description", is(beer.getDescription())))
-                        .andExpect(jsonPath("$.status.value", is(beer.getStatus().getValue())));
+                        .andExpect(jsonPath("$.description", is(beer.getDescription())));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -118,43 +116,37 @@ public class BeerControllerTests {
 				.andExpect(jsonPath("$[0].min", is(list.get(0).getMin().doubleValue())))
 				.andExpect(jsonPath("$[0].max", is(list.get(0).getMax().doubleValue())))
 				.andExpect(jsonPath("$[0].description", is(list.get(0).getDescription())))
-				.andExpect(jsonPath("$[0].status.value", is(list.get(0).getStatus().getValue())))
 				.andExpect(jsonPath("$[0].type.value", is(list.get(0).getType().getValue())))
 				.andExpect(jsonPath("$[1].id", is(list.get(1).getId().intValue())))
 				.andExpect(jsonPath("$[1].min", is(list.get(1).getMin().doubleValue())))
 				.andExpect(jsonPath("$[1].max", is(list.get(1).getMax().doubleValue())))
 				.andExpect(jsonPath("$[1].description", is(list.get(1).getDescription())))
-				.andExpect(jsonPath("$[1].status.value", is(list.get(1).getStatus().getValue())))
 				.andExpect(jsonPath("$[1].type.value", is(list.get(1).getType().getValue())))
 				.andExpect(jsonPath("$[2].id", is(list.get(2).getId().intValue())))
 				.andExpect(jsonPath("$[2].min", is(list.get(2).getMin().doubleValue())))
 				.andExpect(jsonPath("$[2].max", is(list.get(2).getMax().doubleValue())))
 				.andExpect(jsonPath("$[2].description", is(list.get(2).getDescription())))
-				.andExpect(jsonPath("$[2].status.value", is(list.get(2).getStatus().getValue())))
 				.andExpect(jsonPath("$[2].type.value", is(list.get(2).getType().getValue())))
 				.andExpect(jsonPath("$[3].id", is(list.get(3).getId().intValue())))
 				.andExpect(jsonPath("$[3].min", is(list.get(3).getMin().doubleValue())))
 				.andExpect(jsonPath("$[3].max", is(list.get(3).getMax().doubleValue())))
 				.andExpect(jsonPath("$[3].description", is(list.get(3).getDescription())))
-				.andExpect(jsonPath("$[3].status.value", is(list.get(3).getStatus().getValue())))
 				.andExpect(jsonPath("$[3].type.value", is(list.get(3).getType().getValue())))
 				.andExpect(jsonPath("$[4].id", is(list.get(4).getId().intValue())))
 				.andExpect(jsonPath("$[4].min", is(list.get(4).getMin().doubleValue())))
 				.andExpect(jsonPath("$[4].max", is(list.get(4).getMax().doubleValue())))
 				.andExpect(jsonPath("$[4].description", is(list.get(4).getDescription())))
-				.andExpect(jsonPath("$[4].status.value", is(list.get(4).getStatus().getValue())))
 				.andExpect(jsonPath("$[4].type.value", is(list.get(4).getType().getValue())))
 				.andExpect(jsonPath("$[5].id", is(list.get(5).getId().intValue())))
 				.andExpect(jsonPath("$[5].min", is(list.get(5).getMin().doubleValue())))
 				.andExpect(jsonPath("$[5].max", is(list.get(5).getMax().doubleValue())))
 				.andExpect(jsonPath("$[5].description", is(list.get(5).getDescription())))
-				.andExpect(jsonPath("$[5].status.value", is(list.get(5).getStatus().getValue())))
 				.andExpect(jsonPath("$[5].type.value", is(list.get(5).getType().getValue())));
 	}
 
 	@Test
 	public void createBeer() throws Exception {
-		Beer beer = new Beer("New Beer " + UUID.randomUUID(), BeerType.NONE, 0.0, 10.0, null, StatusType.OK);
+		Beer beer = new Beer("New Beer " + UUID.randomUUID(), BeerType.NONE, 0.0, 10.0);
 		String beerJson = json(beer);
 
 		this.mockMvc.perform(post(httpUrl)
@@ -165,7 +157,7 @@ public class BeerControllerTests {
 
 	@Test
 	public void createBeerDuplicate() throws Exception {
-		Beer beer = new Beer("Beer 2 (IPA)", BeerType.IPA, 5.0, 6.0, null, StatusType.OK);
+		Beer beer = new Beer("Beer 2 (IPA)", BeerType.IPA, 5.0, 6.0);
 		String beerJson = json(beer);
 
 		this.mockMvc.perform(post(httpUrl)
@@ -201,8 +193,6 @@ public class BeerControllerTests {
 	@Test
 	public void updateBeer() throws Exception {
 		this.beerList.forEach(beer -> {
-			beer.updateStatus(0.0);
-
 			try {
 				this.mockMvc.perform(put(httpUrl + beer.getId().intValue())
                         .contentType(contentType)

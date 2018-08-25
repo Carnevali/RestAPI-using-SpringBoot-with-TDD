@@ -1,13 +1,11 @@
 package com.restApi.spring.service;
 
-import com.restApi.spring.model.Beer;
+import com.restApi.spring.model.BeerContainers;
 import com.restApi.spring.model.Containers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by felipecarnevalli on 15/7/18.
@@ -18,7 +16,7 @@ import java.util.Set;
 public class SensorServiceImpl implements SensorService {
 
     @Autowired
-    private BeerService beerService;
+    private BeerContainersService beerContainersService;
 
     @Autowired
     private ContainerService containerService;
@@ -39,9 +37,9 @@ public class SensorServiceImpl implements SensorService {
                 containers.updateTemperature();
             }
 
-            for (Beer beer: containers.getBeers()) {
-                beer.updateStatus(containers.getTemperature());
-                beerService.updateBeer(beer);
+            for (BeerContainers bc: containers.getBeerContainers()) {
+                bc.updateStatusBeer();
+                beerContainersService.update(bc);
             }
 
             containers.updateStatus();
